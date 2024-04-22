@@ -5,14 +5,30 @@ if(empty($_SESSION['admin-username']))
       header("Location: login.php");
     }
 
+if(isset($_POST['btnupdate']))
+{
+
+$fullname=$_POST['txtfullname'];
+$phone=$_POST['txtphone'];
+
+$sql = " update users set fullname='$fullname',phone='$phone' where username='$username'";
+if (mysqli_query($conn, $sql)) {
+
+header( "refresh:2;url= edit_profile.php" );
+$_SESSION['success'] ='User Edited Successfully';
+}else{
+$_SESSION['error'] ='Problem Saving changes';
+}
+}
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Admin Dashboard | <?php echo $sitename ; ?></title>
-
+  <title> Edit Profile|<?php echo $sitename; ?></title>
+ <link rel="icon" type="image/png" sizes="16x16" href="../<?php echo $logo; ?>">
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Font Awesome -->
@@ -33,8 +49,11 @@ if(empty($_SESSION['admin-username']))
   <link rel="stylesheet" href="plugins/daterangepicker/daterangepicker.css">
   <!-- summernote -->
   <link rel="stylesheet" href="plugins/summernote/summernote-bs4.min.css">
-      <link rel="shortcut icon" href="../<?php echo $logo ;  ?>" type="image/x-png" />
-
+  <style type="text/css">
+<!--
+.style1 {color: #000000}
+-->
+  </style>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
 <div class="wrapper">
@@ -73,18 +92,18 @@ if(empty($_SESSION['admin-username']))
   <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-  <a href="#" class="brand-link">
-      <img src="../<?php echo $badge1 ; ?>" alt=" Logo" width="150" height="130" style="opacity: .8">
-      <span class="brand-text font-weight-light">      &nbsp;&nbsp;&nbsp;&nbsp;   </span>    </a>
+    <a href="index.php" class="brand-link">
+    <img src="../<?php echo $logo2; ?>" alt=" Logo" width="150" height="130" style="opacity: .8">
+	        <span class="brand-text font-weight-light"></span>    </a>
 
     <!-- Sidebar -->
     <div class="sidebar">
       <!-- Sidebar user panel (optional) -->
       <div class="user-panel mt-3 pb-3 mb-3 d-flex">
         <div class="image">
-        <img src="../<?php echo $admin_photo;    ?>" alt="User Image" width="140" height="141" class="img-circle elevation-2">        </div>
+          <img src="../<?php echo $row_admin['photo'];    ?>" alt="User Image" width="140" height="141" class="img-circle elevation-2">        </div>
         <div class="info">
-          <a href="#" class="d-block"><?php echo $admin_fullname;  ?></a>
+          <a href="#" class="d-block"><?php echo $row_admin['fullname'];  ?></a>
         </div>
       </div>
 
@@ -117,7 +136,7 @@ if(empty($_SESSION['admin-username']))
       <!-- /.sidebar-menu -->
     </div>
     <!-- /.sidebar -->
-</aside>
+  </aside>
 
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
@@ -126,137 +145,63 @@ if(empty($_SESSION['admin-username']))
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0 text-dark">Dashboard</h1>
+            <h1 class="m-0 text-dark">&nbsp;</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">Dashboard </li>
+              <li class="breadcrumb-item active">Edit Profile </li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
       </div><!-- /.container-fluid -->
     </div>
     <!-- /.content-header -->
-	 <?php
-
-    $query = "SELECT * FROM tblemployee ";
-       $result = mysqli_query($conn, $query);
-    if ($result)
-    {
-        // it return number of rows in the table.
-        $row_no_employee = mysqli_num_rows($result);
-    }
-    ?>
 
     <!-- Main content -->
     <section class="content">
       <div class="container-fluid">
         <!-- Small boxes (Stat box) -->
         <div class="row">
-          <div class="col-lg-3 col-6">
-            <!-- small box -->
-            <div class="small-box bg-info">
-              <div class="inner">
-                <h6><strong><?php echo $row_no_employee;?></strong></h6>
 
-                <p><strong>No. of Employee </strong></p>
+		 <!-- general form elements -->
+            <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">Edit Profile  </h3>
               </div>
-              <div class="icon">
-                <i class=""></i>
-              </div>
-              <a href="#" class="small-box-footer"></a>
+              <!-- form start -->
+             <form  action="" method="POST">
+                <div class="card-body">
+                   <div class="form-group">
+                   <label>Fullname </label>
+                     <input id="userName" name="txtfullname" type="text" size="77" value="<?php echo $row_admin['fullname'];?>" class="form-control required">
+                      </div>
+                         <div class="form-group">
+                          <label>Phone</label>
+                         <input id="confirm" name="txtphone" type="text" size="77" value="<?php echo $row_admin['phone'];?>" class="form-control required">
+                         </div>
+
+											<div class="form-group">
+
+                       <image class="img-circle" src="<?php echo "../".$row_admin['photo'];?>" style="height:55%;width:35%;">
+                  <input type="hidden" value="<?php echo $row_admin['photo'];?>" name="old_image">
+                   </div>
+
+                </div>
+                <!-- /.card-body -->
+
+                <div class="card-footer">
+                  <button type="submit" name="btnupdate" class="btn btn-primary">Save Changes</button>
+                </div>
+              </form>
             </div>
-          </div>
-          <!-- ./col -->
 
-	 <?php
-
-    $query = "SELECT * FROM tblleave ";
-       $result = mysqli_query($conn, $query);
-
-    if ($result)
-    {
-        // it return number of rows in the table.
-        $row_no_leave = mysqli_num_rows($result);
-
-    }
-    ?>
-          <div class="col-lg-3 col-6">
-            <!-- small box -->
-            <div class="small-box bg-success">
-              <div class="inner">
-                <h6><?php echo $row_no_leave; ?></h6>
-
-                <p><strong>No. of Leave Application(s) </strong></p>
-              </div>
-              <div class="icon">
-                <i class=""></i>
-              </div>
-              <a href="#" class="small-box-footer"></a>
-            </div>
-          </div>
-          <!-- ./col -->
-
-          <?php
-
-$query = "SELECT * FROM tblleave where status ='Approved' ";
-   $result = mysqli_query($conn, $query);
-if ($result)
-{
-    // it return number of rows in the table.
-    $row_no_leave_approved = mysqli_num_rows($result);
-}
-?>
-      <div class="col-lg-3 col-6">
-        <!-- small box -->
-        <div class="small-box bg-primary">
-          <div class="inner">
-            <h6><?php echo $row_no_leave_approved; ?></h6>
-
-            <p><strong>No. of Approved Leave </strong></p>
-          </div>
-          <div class="icon">
-            <i class=""></i>
-          </div>
-          <a href="#" class="small-box-footer"></a>
         </div>
-      </div>
-      <!-- ./col -->
-
-      <?php
-
-$query = "SELECT * FROM tblleave where status ='Declined' ";
-   $result = mysqli_query($conn, $query);
-if ($result)
-{
-    // it return number of rows in the table.
-    $row_no_leave_declined = mysqli_num_rows($result);
-}
-?>
-      <div class="col-lg-3 col-6">
-        <!-- small box -->
-        <div class="small-box bg-primary">
-          <div class="inner">
-            <h6><?php echo $row_no_leave_declined; ?></h6>
-
-            <p><strong>No. of Declined Leave </strong></p>
-          </div>
-          <div class="icon">
-            <i class=""></i>
-          </div>
-          <a href="#" class="small-box-footer"></a>
-        </div>
-      </div>
-      <!-- ./col -->
-
-
-
-      <!-- Main row -->
-      <div class="row">
+        <!-- /.row -->
+        <!-- Main row -->
+        <div class="row">
           <!-- Left col --><!-- /.Left col -->
           <!-- right col (We are only adding the ID to make the widgets sortable)--><!-- right col -->
-
         </div>
         <!-- /.row (main row) -->
       </div><!-- /.container-fluid -->
@@ -265,7 +210,7 @@ if ($result)
   </div>
   <!-- /.content-wrapper -->
   <footer class="main-footer">
-    <?php include('../inc/footer.php');  ?>
+    <?php include('footer.php');  ?>
     <div class="float-right d-none d-sm-inline-block">
 
     </div>
@@ -313,5 +258,46 @@ if ($result)
 <script src="dist/js/demo.js"></script>
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 <script src="dist/js/pages/dashboard.js"></script>
+<link rel="stylesheet" href="popup_style.css">
+<?php if(!empty($_SESSION['success'])) {  ?>
+<div class="popup popup--icon -success js_success-popup popup--visible">
+  <div class="popup__background"></div>
+  <div class="popup__content">
+    <h3 class="popup__content__title">
+      <strong>Success</strong>
+    </h1>
+    <p><?php echo $_SESSION['success']; ?></p>
+    <p>
+      <button class="button button--success" data-for="js_success-popup">Close</button>
+    </p>
+  </div>
+</div>
+<?php unset($_SESSION["success"]);
+} ?>
+<?php if(!empty($_SESSION['error'])) {  ?>
+<div class="popup popup--icon -error js_error-popup popup--visible">
+  <div class="popup__background"></div>
+  <div class="popup__content">
+    <h3 class="popup__content__title">
+      <strong>Error</strong>
+    </h1>
+    <p><?php echo $_SESSION['error']; ?></p>
+    <p>
+      <button class="button button--error" data-for="js_error-popup">Close</button>
+    </p>
+  </div>
+</div>
+<?php unset($_SESSION["error"]);  } ?>
+    <script>
+      var addButtonTrigger = function addButtonTrigger(el) {
+  el.addEventListener('click', function () {
+    var popupEl = document.querySelector('.' + el.dataset.for);
+    popupEl.classList.toggle('popup--visible');
+  });
+};
+
+Array.from(document.querySelectorAll('button[data-for]')).
+forEach(addButtonTrigger);
+    </script>
 </body>
 </html>
